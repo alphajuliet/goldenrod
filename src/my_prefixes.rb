@@ -25,11 +25,10 @@ module RDF
 		:rel		=> "http://purl.org/vocab/relationship",
 		:dct		=> "http://purl.org/dc/terms/",
 		
-		:net 		=> "http://alphajuliet.com/ns/ont/network#",
-    :drink  => "http://alphajuliet.com/ns/ont/drink#",
 		:ajc 		=> "http://alphajuliet.com/ns/contact#",
     :ajo    => "http://alphajuliet.com/ns/org#", 
 		:ajp 		=> "http://alphajuliet.com/ns/people#",
+    :sfdc   => "http://alphajuliet.com/ns/rsa/sfdc#",
 		nil			=> "http://alphajuliet.com/ns/contact#"
 	}
 
@@ -39,11 +38,8 @@ module RDF
 		RDF::Vocabulary.new(RDF::PREFIX[prefix])
 	end
 	
-	AJP		= RDF.CreateVocab(:ajp)
-	AJC 	= RDF.CreateVocab(:ajc)
-	AJO 	= RDF.CreateVocab(:ajo)
-	NET		= RDF.CreateVocab(:net)
-	DRINK	= RDF.CreateVocab(:drink)
+	SFDC	= RDF.CreateVocab(:sfdc)
+
 	ORG		= RDF.CreateVocab(:org)
 	GLDP	= RDF.CreateVocab(:gldp)
 	V		  = RDF.CreateVocab(:v)

@@ -3,55 +3,32 @@
 require 'csv'
 require 'rdf'
 require 'rdf/turtle'
+require 'my_prefixes'
 
 #-------------------
 class RdfConverter
 
-  attr_reader :data, :triples
+  attr_reader :data, :triples, :graph
   
-  def initialize()
+  def initialize
     STDERR.puts "# Running converter: #{__FILE__}"
-    @triples = Array.new
   end
 
-  def to_rdf
-
-    # Make triples
-    @triples = []
-    @data.each do |row|
-      s = subject(row) 
-      row.each do |key, value|
-        p = self.prefix + make_property(key)
-        o = make_object(value)
-        @triples << [s, p, o]
-      end
-    end
-
-    # map_properties
-    # assign_types
-    # handle_invalid_values
-    
-    @triples
+  def convert_to_rdf
   end
 
-  def subject(row)
-    # abstract method to be implemented in the subclass
+  def to_turtle
+    @triples.each { |t| @graph << t }
+    @graph.dump(:turtle, :prefixes => RDF::PREFIX)
+  end
+
+  def make_subject(row)
   end
 
   def make_property(str)
-    str.sub!(/[%$()]+/, "")
-    str.tr!("A-Z", "a-z")
-    str.rstrip!
-    str.sub!(/\s+/, "-")
-    str
-  end
-
-  def prefix 
-
   end
 
   def make_object(str)
-    "\"#{str}\""
   end
 
   #------------------------------
@@ -62,12 +39,21 @@ class RdfConverter
   end
 
   def load_csv(fname)
-    # Create an array of rows
-    @data = CSV.read(fname, :headers => true)
+    @csv = CSV.read(fname, :headers => true)
   end
 
   def load_latest(fpattern)
     load_csv(find_newest(fpattern))
+  end
+
+  # Utility function
+  def clean(str)
+    s = str
+    s.gsub!(/[%$()]+/, "")
+    s.tr!("A-Z", "a-z")
+    s.rstrip!
+    s.gsub!(/\s+/, "-")
+    s
   end
 
   #------------------------------
