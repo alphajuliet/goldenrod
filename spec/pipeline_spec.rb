@@ -18,6 +18,7 @@ RSpec.describe Pipeline do
   it "generates RDF" do
     rdf = p.convert_to_rdf.graph
     expect(rdf).to be_truthy
+    expect(rdf.count).to eq(16)
   end
 
 end

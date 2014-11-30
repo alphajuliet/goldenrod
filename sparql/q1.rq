@@ -1,0 +1,14 @@
+prefix Rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix sfdc: <http://alphajuliet.com/ns/rsa/sfdc#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+select ?close (sum(?deal) as ?dealTotal)
+where {
+# ?id sfdc:probability 100 .
+  ?id sfdc:opportunity-name ?name .
+  ?id sfdc:ps-amount ?deal .
+  ?id sfdc:close-month ?close .
+  filter (?deal > 0) .
+}
+group by ?close
+
