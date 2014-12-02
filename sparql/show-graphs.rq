@@ -1,0 +1,13 @@
+# List the named graphs available.
+
+prefix Rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix sfdc: <http://alphajuliet.com/ns/rsa/sfdc#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+select distinct ?g
+where {
+  graph ?g {
+    ?s ?p ?o .
+  }
+}
+

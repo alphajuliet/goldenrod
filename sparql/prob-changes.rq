@@ -1,0 +1,21 @@
+# Show changes in probability between two SFDC reports
+
+prefix Rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix sfdc: <http://alphajuliet.com/ns/rsa/sfdc#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+select ?name ?p1 ?p2
+where {
+  { 
+    graph <http://alphajuliet.com/ns/rsa/sfdc-2014-11-24> { 
+      ?s sfdc:opportunity-name ?name .
+      ?s sfdc:probability ?p1 . 
+    } 
+    graph <http://alphajuliet.com/ns/rsa/sfdc-2014-12-01> { 
+      ?s sfdc:opportunity-name ?name .
+      ?s sfdc:probability ?p2 . 
+    } 
+  }
+  filter (?p1 != ?p2)
+}
+
