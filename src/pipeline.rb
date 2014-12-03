@@ -65,7 +65,14 @@ class Pipeline < RdfConverter
   def to_turtle
     @graph = RDF::Graph.new(:context => @name)
     @triples.each { |t| @graph << t }
-    @graph.dump(:turtle, :prefixes => RDF::PREFIX)
+    # @graph.dump(:turtle, :prefixes => RDF::PREFIX)
+  end
+
+  def write_as_turtle(filename)
+    raise "Empty graph" if @graph.nil?
+    RDF::Turtle::Writer.open(filename, :prefixes => RDF::PREFIX) do |writer|
+      writer << @graph
+    end
   end
 
 end
