@@ -23,6 +23,7 @@ module RDF
 		:fb			=> "http://rdf.freebase.com/ns/",
 		:skos   => "http://www.w3.org/2004/02/skos/core#",
 		:rel		=> "http://purl.org/vocab/relationship",
+    :dc     => "http://purl.org/dc/elements/1.1/", 
 		:dct		=> "http://purl.org/dc/terms/",
 		
 		:ajc 		=> "http://alphajuliet.com/ns/contact#",
@@ -47,6 +48,8 @@ module RDF
 	DBP		= RDF.CreateVocab(:dbp)
 	DBO		= RDF.CreateVocab(:dbo)
 	FB		= RDF.CreateVocab(:fb)
+  DC    = RDF.CreateVocab(:dc)
+  DCT   = RDF.CreateVocab(:dct)
 	
 	# Save for later
 	#REL	= RDF.CreateVocab(:rel)

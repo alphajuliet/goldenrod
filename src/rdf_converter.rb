@@ -1,5 +1,6 @@
 #!/bin/env ruby
 
+require 'date'
 require 'csv'
 require 'rdf'
 require 'rdf/turtle'
@@ -8,18 +9,13 @@ require 'my_prefixes'
 #-------------------
 class RdfConverter
 
-  attr_reader :data, :triples, :graph
+  attr_reader :data, :triples, :graph, :name, :datestamp
   
   def initialize
     STDERR.puts "# Running converter: #{__FILE__}"
   end
 
   def convert_to_rdf
-  end
-
-  def to_turtle
-    @triples.each { |t| @graph << t }
-    @graph.dump(:turtle, :prefixes => RDF::PREFIX)
   end
 
   def make_subject(row)
@@ -39,7 +35,14 @@ class RdfConverter
   end
 
   def load_csv(fname)
+    @datestamp = Date.today.to_s
     @csv = CSV.read(fname, :headers => true)
+
+    d = fname.match(/\d{4}-\d{2}-\d{2}/)
+    @datestamp = d.to_s unless d.nil?
+
+    @name = @ns + @datestamp
+    STDERR.puts "# Datestamp: #{@datestamp}"
   end
 
   def load_latest(fpattern)

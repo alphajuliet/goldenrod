@@ -11,11 +11,12 @@ class Pipeline < RdfConverter
 
   def initialize
     super
-    @graph = RDF::Graph.new(:context => "http://alphajuliet.com/ns/rsa/sfdc")
+    @ns = "http://alphajuliet.com/ns/rsa/sfdc/"
+    @triples = []
   end
 
   def convert_to_rdf
-    @triples = []
+    add_metadata
     @csv.each do |row|
       s = make_subject(row) 
       STDERR.puts "# subject: #{s}"
@@ -53,12 +54,26 @@ class Pipeline < RdfConverter
     x
   end
 
+  def add_metadata
+    dt = DateTime.now
+    this = RDF::URI.new(@name)
+    @triples << [ this, RDF::DCT.title, RDF::Literal.new("sfdc " + @datestamp) ]
+    @triples << [ this, RDF::DCT.created, RDF::Literal.new(dt.to_s, :datatype => RDF::XSD.datetime)]
+    @triples << [ this, RDF::DC.date, RDF::Literal.new(@datestamp, :datatype => RDF::XSD.date) ]
+  end
+
+  def to_turtle
+    @graph = RDF::Graph.new(:context => @name)
+    @triples.each { |t| @graph << t }
+    @graph.dump(:turtle, :prefixes => RDF::PREFIX)
+  end
+
 end
 
 #---------------------------------
 if __FILE__ == $0
 
-  if ARGV.length > 0
+  if ARGV.length == 1
     p = Pipeline.new
     p.load_csv(ARGV[0])
     p.convert_to_rdf
