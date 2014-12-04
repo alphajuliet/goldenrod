@@ -4,7 +4,6 @@ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
 select ?close (sum(?deal) as ?dealTotal)
 where {
-# ?id sfdc:probability 100 .
   ?id sfdc:opportunity-name ?name .
   ?id sfdc:ps-amount ?deal .
   ?id sfdc:close-month ?close .
