@@ -13,12 +13,13 @@ class Projects < RdfConverter
 
   def initialize
     super
+    STDERR.puts "# Running converter: #{__FILE__}"
     @ns = "http://alphajuliet.com/ns/rsa/proj#"
     @triples = []
   end
 
   def convert_to_rdf
-    add_metadata
+    add_graph_metadata
     @csv.each do |row|
       s = make_subject(row) 
       # STDERR.puts "# subject: #{s}"
@@ -51,8 +52,8 @@ class Projects < RdfConverter
     x = RDF::Literal.new(str.to_s)
     x = RDF::Literal.new(str, :datatype => RDF::XSD.integer) if (str =~ /^[0-9]+$/)
     x = RDF::Literal.new(str, :datatype => RDF::XSD.decimal) if (str =~ /^[0-9]+\.[0-9]*$/)
-    x = RDF::Literal.new(false, :datatype => RDF::XSD.boolean) if (str =~ /no|false/i)
-    x = RDF::Literal.new(true, :datatype => RDF::XSD.boolean) if (str =~ /yes|true/i)
+    x = RDF::Literal.new("false", :datatype => RDF::XSD.boolean) if (str =~ /no|false/i)
+    x = RDF::Literal.new("true", :datatype => RDF::XSD.boolean) if (str =~ /yes|true/i)
     if (str =~ /^[0-9]{2}-[0-9]{2}-[0-9]{2}$/)
       d = Date.strptime(str, "%d-%m-%y")
       x = RDF::Literal.new(d.to_s, :datatype => RDF::XSD.date) 
@@ -64,9 +65,11 @@ class Projects < RdfConverter
     x
   end
 
-  def add_metadata
+  def add_graph_metadata
     dt = DateTime.now
     this = RDF::URI.new(@name)
+    @triples << [ this, RDF.type, RDF::PROJ.Snapshot ]
+    @triples << [ this, RDF::RDFS.label, RDF::Literal.new("A graph containing a snapshot of the projects.") ]
     @triples << [ this, RDF::DCT.title, RDF::Literal.new("proj " + @datestamp) ]
     @triples << [ this, RDF::DCT.created, RDF::Literal.new(dt.to_s, :datatype => RDF::XSD.datetime)]
     @triples << [ this, RDF::DC.date, RDF::Literal.new(@datestamp, :datatype => RDF::XSD.date) ]

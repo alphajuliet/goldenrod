@@ -11,15 +11,16 @@ class Pipeline < RdfConverter
 
   def initialize
     super
+    STDERR.puts "# Running converter: #{__FILE__}"
     @ns = "http://alphajuliet.com/ns/rsa/sfdc#"
     @triples = []
   end
 
   def convert_to_rdf
-    add_metadata
+    add_graph_metadata
     @csv.each do |row|
       s = make_subject(row) 
-      STDERR.puts "# subject: #{s}"
+      # STDERR.puts "# subject: #{s}"
       @triples << [s, RDF.type, RDF::SFDC.Opportunity]
       row.each do |key, value|
         p = make_property(key)
@@ -54,9 +55,11 @@ class Pipeline < RdfConverter
     x
   end
 
-  def add_metadata
+  def add_graph_metadata
     dt = DateTime.now
     this = RDF::URI.new(@name)
+    @triples << [ this, RDF.type, RDF::SFDC.Snapshot ]
+    @triples << [ this, RDF::RDFS.label, RDF::Literal.new("A graph containing a snapshot of the SFDC pipeline.") ]
     @triples << [ this, RDF::DCT.title, RDF::Literal.new("sfdc " + @datestamp) ]
     @triples << [ this, RDF::DCT.created, RDF::Literal.new(dt.to_s, :datatype => RDF::XSD.datetime)]
     @triples << [ this, RDF::DC.date, RDF::Literal.new(@datestamp, :datatype => RDF::XSD.date) ]

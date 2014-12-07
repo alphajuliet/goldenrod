@@ -1,15 +1,12 @@
 # List the named graphs available.
 
-prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-prefix sfdc:  <http://alphajuliet.com/ns/rsa/sfdc#>
-prefix xsd:   <http://www.w3.org/2001/XMLSchema#>
 prefix dc:    <http://purl.org/dc/elements/1.1/>
 prefix dct:   <http://purl.org/dc/terms/>
 
-select ?g ?name
+select ?g ?type
 where {
   graph ?g {
-    ?g dct:title ?name .
+    { ?g a ?type ; }
   }
 }
 order by desc(?g)

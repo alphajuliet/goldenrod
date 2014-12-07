@@ -1,23 +1,23 @@
-prefix Rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-prefix sfdc: <http://alphajuliet.com/ns/rsa/sfdc#>
-prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+# Test SPARQL queries
 
 select ?close (sum(?wtd) as ?wtdTotal)
   where {
     {
-      select ?g
-        where { graph ?g { ?s ?p ?o } }
+      # Select the latest graph
+      select ?g 
+        where { ?g a sfdc:Snapshot . } 
       order by desc(?g) limit 1
     }
     {
       graph ?g {
-        ?id sfdc:opportunity-name ?name .
-          ?id sfdc:ps-amount ?deal .
-          ?id sfdc:close-month ?close .
-          ?id sfdc:probability ?prob .
+        ?id a sfdc:Opportunity ;
+          sfdc:opportunity-name ?name ;
+          sfdc:ps-amount ?deal ;
+          sfdc:close-month ?close ;
+          sfdc:probability ?prob .
 
-          bind (?deal*?prob/100 as ?wtd)
-          filter (?deal > 0) .
+        bind (?deal*?prob/100 as ?wtd)
+        filter (?deal > 0) .
       }
     }
   }

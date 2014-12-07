@@ -11,7 +11,7 @@ ns_sfdc = "http://alphajuliet.com/ns/rsa/sfdc#"
 ns_proj = "http://alphajuliet.com/ns/rsa/proj#"
 db = "goldenrod"
 
-desc "Generate all pipeline RDF files"
+desc "Convert SFDC pipeline files to RDF"
 task :sfdc do
   FileList.new("data/*-sfdc.csv").each do |csv|
     ttl = csv.sub('csv', 'ttl')
@@ -26,7 +26,7 @@ task :sfdc do
   end
 end
 
-desc "Test task"
+desc "Convert projects to RDF"
 task :proj do
   FileList.new("data/*-projects.csv").each do |csv|
     puts "# Updating #{csv}"
@@ -39,9 +39,8 @@ task :proj do
   end
 end
 
-
 desc "Remove all TTL files"
-task :clean do
+task :clean_all do
   FileList['data/*.ttl'].each do |f|
     File.delete(f)
   end
@@ -54,26 +53,26 @@ task :sfdc_load do
     graph = ns_sfdc + d.to_s
     cmd = "#{stardog} data add -g \"#{graph}\" #{db} \"#{f}\""
     puts cmd
-    system(cmd)
+    puts system(cmd)
   end
 end
 
 desc "Load projects graphs into the triple store"
 task :proj_load do
-  FileList["data/*-proj.ttl"].each do |f|
+  FileList["data/*-projects.ttl"].each do |f|
     d = f.match(/\d{4}-\d{2}-\d{2}/)
     graph = ns_proj + d.to_s
     cmd = "#{stardog} data add -g \"#{graph}\" #{db} \"#{f}\""
     puts cmd
-    system(cmd)
+    puts system(cmd)
   end
 end
 
 desc "Remove all triples"
-task :remove_all do
+task :wipe_database do
   cmd = "#{stardog} data remove --all #{db}"
   puts cmd
-  system(cmd)
+  puts system(cmd)
 end
 
 desc "Count triples in the store"
@@ -81,6 +80,15 @@ task :count do
   cmd = "#{stardog} data size #{db}"
   puts cmd
   system(cmd)
+end
+
+desc "Fix boolean import bug in Stardog"
+task :fix_booleans do
+  FileList["data/*.ttl"].each do |ttl|
+    cmd = "sed -re 's/false|true/\"&\"^^xsd:boolean/' #{ttl} > tmp$$; mv tmp$$ #{ttl}"
+    puts cmd
+    puts system(cmd)
+  end
 end
 
 # The End

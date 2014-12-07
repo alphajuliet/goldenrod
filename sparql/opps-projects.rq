@@ -1,0 +1,22 @@
+prefix sfdc: <http://alphajuliet.com/ns/rsa/sfdc#>
+prefix proj: <http://alphajuliet.com/ns/rsa/proj#>
+
+select ?sow ?deal ?name1 ?name2
+where {
+  {
+    graph ?gp {
+      ?gp a proj:Snapshot .
+      ?p a proj:Project;
+        proj:fn ?name1 ;
+        proj:sow ?sow .
+    }
+    graph ?gs {
+      ?gs a sfdc:Snapshot .
+      ?opp a sfdc:opportunity ;
+        sfdc:sow-number ?sow ;
+        sfdc:opportunity-name ?name2 ;
+        sfdc:ps-amount ?deal .
+    }
+  }
+}
+limit 10

@@ -12,7 +12,6 @@ class RdfConverter
   attr_reader :data, :triples, :graph, :name, :datestamp
   
   def initialize
-    STDERR.puts "# Running converter: #{__FILE__}"
   end
 
   def convert_to_rdf
