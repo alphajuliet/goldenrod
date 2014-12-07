@@ -29,7 +29,9 @@ module RDF
 		:ajc 		=> "http://alphajuliet.com/ns/contact#",
     :ajo    => "http://alphajuliet.com/ns/org#", 
 		:ajp 		=> "http://alphajuliet.com/ns/people#",
+
     :sfdc   => "http://alphajuliet.com/ns/rsa/sfdc#",
+    :proj   => "http://alphajuliet.com/ns/rsa/proj#",
 		nil			=> "http://alphajuliet.com/ns/contact#"
 	}
 
@@ -40,6 +42,7 @@ module RDF
 	end
 	
 	SFDC	= RDF.CreateVocab(:sfdc)
+	PROJ	= RDF.CreateVocab(:proj)
 
 	ORG		= RDF.CreateVocab(:org)
 	GLDP	= RDF.CreateVocab(:gldp)

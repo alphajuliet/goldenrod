@@ -52,7 +52,9 @@ class RdfConverter
   # Utility function
   def clean(str)
     s = str
-    s.gsub!(/[%$()]+/, "")
+    s.gsub!('%', 'percent')
+    s.gsub!('?', '_q')
+    s.gsub!(/[$()\/]+/, "")
     s.tr!("A-Z", "a-z")
     s.rstrip!
     s.gsub!(/\s+/, "-")
