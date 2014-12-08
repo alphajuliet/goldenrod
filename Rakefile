@@ -12,10 +12,11 @@ ns_proj = "http://alphajuliet.com/ns/rsa/proj#"
 db = "goldenrod"
 
 desc "Convert SFDC pipeline files to RDF"
-task :sfdc do
+task :sfdc_rdf do
   FileList.new("data/*-sfdc.csv").each do |csv|
     ttl = csv.sub('csv', 'ttl')
-    unless uptodate?(ttl, csv)
+    #unless uptodate?(ttl, csv)
+    unless File.exists?(ttl)
       puts "# Updating #{csv}"
       p = Pipeline.new
       p.load_csv(csv)
@@ -27,15 +28,17 @@ task :sfdc do
 end
 
 desc "Convert projects to RDF"
-task :proj do
+task :proj_rdf do
   FileList.new("data/*-projects.csv").each do |csv|
     puts "# Updating #{csv}"
     ttl = csv.sub('.csv', '.ttl')
-    p = Projects.new
-    p.load_csv(csv.to_s)
-    p.convert_to_rdf
-    p.to_turtle
-    p.write_as_turtle(ttl)
+    unless File.exists?(ttl)
+      p = Projects.new
+      p.load_csv(csv.to_s)
+      p.convert_to_rdf
+      p.to_turtle
+      p.write_as_turtle(ttl)
+    end
   end
 end
 
@@ -46,8 +49,18 @@ task :clean_all do
   end
 end
 
+desc "Load an individual SFDC file"
+task :sfdc_load, :file do |t, args|
+  f = args[:file]
+  d = f.match(/\d{4}-\d{2}-\d{2}/)
+  graph = ns_sfdc + d.to_s
+  cmd = "#{stardog} data add -g \"#{graph}\" #{db} \"#{f}\""
+  puts cmd
+  puts system(cmd)
+end
+
 desc "Load SFDC graphs into the triple store"
-task :sfdc_load do
+task :sfdc_load_all do
   FileList["data/*-sfdc.ttl"].each do |f|
     d = f.match(/\d{4}-\d{2}-\d{2}/)
     graph = ns_sfdc + d.to_s
@@ -57,8 +70,18 @@ task :sfdc_load do
   end
 end
 
+desc "Load an individual projects file"
+task :proj_load, :file do |t, args|
+  f = args[:file]
+  d = f.match(/\d{4}-\d{2}-\d{2}/)
+  graph = ns_proj + d.to_s
+  cmd = "#{stardog} data add -g \"#{graph}\" #{db} \"#{f}\""
+  puts cmd
+  puts system(cmd)
+end
+
 desc "Load projects graphs into the triple store"
-task :proj_load do
+task :proj_load_all do
   FileList["data/*-projects.ttl"].each do |f|
     d = f.match(/\d{4}-\d{2}-\d{2}/)
     graph = ns_proj + d.to_s
