@@ -57,7 +57,7 @@ class Subcons < RdfConverter
     this = RDF::URI.new(@name)
     @triples << [ this, RDF.type, RDF::SUBCON.Snapshot ]
     @triples << [ this, RDF::RDFS.label, RDF::Literal.new("A graph containing a snapshot of the subcon POs.") ]
-    @triples << [ this, RDF::DCT.title, RDF::Literal.new("sfdc " + @datestamp) ]
+    @triples << [ this, RDF::DCT.title, RDF::Literal.new("subcons-" + @datestamp) ]
     @triples << [ this, RDF::DCT.created, RDF::Literal.new(dt.to_s, :datatype => RDF::XSD.datetime)]
     @triples << [ this, RDF::DC.date, RDF::Literal.new(@datestamp, :datatype => RDF::XSD.date) ]
   end

@@ -1,25 +1,18 @@
 # Test SPARQL queries
 
-select ?close (sum(?wtd) as ?wtdTotal)
-  where {
-    {
-      # Select the latest graph
-      select ?g 
-        where { ?g a sfdc:Snapshot . } 
-      order by desc(?g) limit 1
-    }
-    {
-      graph ?g {
-        ?id a sfdc:Opportunity ;
-          sfdc:opportunity-name ?name ;
-          sfdc:ps-amount ?deal ;
-          sfdc:close-month ?close ;
-          sfdc:probability ?prob .
+prefix dc: <http://purl.org/dc/terms/>
 
-        bind (?deal*?prob/100 as ?wtd)
-        filter (?deal > 0) .
-      }
-    }
+# Select the latest SFDC graph
+select ?g1 ?g2
+where {
+  {
+    select ?g1
+      where { graph ?g1 { ?g1 a sfdc:Snapshot . } }
+    order by desc(?g1) limit 1
   }
-group by ?close
-
+  {
+    select ?g2
+      where { graph ?g2 { ?g2 a sfdc:Snapshot . } }
+    order by desc(?g2) offset 1 limit 1
+  }
+}

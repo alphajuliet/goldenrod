@@ -1,25 +1,17 @@
-prefix Rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-prefix sfdc: <http://alphajuliet.com/ns/rsa/sfdc#>
-prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+# Show the weighted pipe by close month
+prefix dct:   <http://purl.org/dc/terms/>
 
-select ?close (sum(?wtd) as ?wtdTotal)
-  where {
-    {
-      select ?g
-        where { graph ?g { ?s ?p ?o } }
-      order by desc(?g) limit 1
+select ?close (sum(?wtd) as ?wtdTotal) where {
+    graph ?g {
+      ?g dct:title "sfdc 2014-12-08" .
+      ?id sfdc:opportunity-name ?name ;
+          sfdc:ps-amount ?deal ;
+          sfdc:close-month ?close ;
+          sfdc:probability-percent ?prob .
+       bind (?deal*?prob/100 as ?wtd)
+       filter (?deal > 0) .
     }
-    {
-      graph ?g {
-        ?id sfdc:opportunity-name ?name .
-          ?id sfdc:ps-amount ?deal .
-          ?id sfdc:close-month ?close .
-          ?id sfdc:probability ?prob .
-
-          bind (?deal*?prob/100 as ?wtd)
-          filter (?deal > 0) .
-      }
-    }
-  }
+}
 group by ?close
 
+# The End

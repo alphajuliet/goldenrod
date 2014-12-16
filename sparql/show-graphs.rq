@@ -3,10 +3,11 @@
 prefix dc:    <http://purl.org/dc/elements/1.1/>
 prefix dct:   <http://purl.org/dc/terms/>
 
-select ?g ?type
+select ?g ?type ?name
 where {
   graph ?g {
-    { ?g a ?type ; }
+    ?g a ?type ; 
+      dct:title ?name .
   }
 }
 order by desc(?g)
