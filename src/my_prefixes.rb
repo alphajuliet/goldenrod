@@ -32,6 +32,7 @@ module RDF
 
     :sfdc   => "http://alphajuliet.com/ns/rsa/sfdc#",
     :proj   => "http://alphajuliet.com/ns/rsa/proj#",
+    :subcon => "http://alphajuliet.com/ns/rsa/subcon#",
 		nil			=> "http://alphajuliet.com/ns/contact#"
 	}
 
@@ -43,6 +44,7 @@ module RDF
 	
 	SFDC	= RDF.CreateVocab(:sfdc)
 	PROJ	= RDF.CreateVocab(:proj)
+	SUBCON = RDF.CreateVocab(:subcon)
 
 	ORG		= RDF.CreateVocab(:org)
 	GLDP	= RDF.CreateVocab(:gldp)
